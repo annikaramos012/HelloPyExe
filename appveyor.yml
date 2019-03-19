@@ -1,0 +1,28 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+init:
+- cmd: >-
+    SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+
+    SET PYTHON_SITE=%PYTHON%\lib\site-packages
+
+    FOR /F "tokens=*" %%a IN ('python -c "import sys;print('%%s.%%s.%%s' %% sys.version_info[0:3])"') do (SET PYTHON_VERSION=%%a)
+
+    ECHO %PYTHON% %PYTHON_VERSION%
+environment:
+  PYTHON: C:\Python37-x64
+install:
+- cmd: >-
+    python -m pip install --upgrade pip
+
+    pip install -r requirements.txt
+
+    pip install pyinstaller
+build_script:
+- cmd: pyinstaller main.py --onefile
+artifacts:
+- path: dist\*
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: X2Y92YYCKc+dQ6u/pkLncjI3diiwCq1XGoz9B/S56lI7ZfD5cTwyv3XUJrdIjldr
